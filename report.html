@@ -1,0 +1,268 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | Manage visit{% endblock title %}
+<style>
+    /* Style for container */
+    .container {
+        margin-top: 50px;
+    }
+
+    /* Style for input fields and buttons */
+    .form-control {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    /* Style for columns */
+    .col-md-4 {
+        width: calc(33.33% - 20px);
+        float: left;
+        margin-right: 20px;
+    }
+
+    /* Clearfix for row */
+    .row::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+
+    /* Additional styling */
+    h4 {
+        margin-bottom: 10px;
+    }
+</style>
+
+{% block body %}
+{% load static %}
+<div id="xyz" style="padding-top: 5%;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h4>Search by Date Range</h4>
+                <input type="text" id="startDate" onkeyup="searchTable()" placeholder="Start Date (MM/DD/YYYY)..."
+                    class="form-control">
+                <input type="text" id="endDate" onkeyup="searchTable()" placeholder="End Date (MM/DD/YYYY)..."
+                    class="form-control">
+            </div>
+
+            <div class="col-md-4" style="margin-left: 33%;">
+                <h4>Search by College</h4>
+                <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search by College..."
+                    class="form-control">
+            </div>
+        </div>
+        <br>
+        <button onclick="generatePDF()" class="btn btn-primary">Generate Report</button>
+    </div>
+
+
+        <div id="pdf-header" style="text-align: center; display: none;">
+        
+            <img src="{% static 'image/logo.png' %}" alt="Logo" style="width: 120px; height: 100px; float: right;">
+            <h4><b style="color: blue;">Bhaskaracharya National Institute for Space Applications and Geo-informatics</b></h4>
+            <p id="generation-date"></p>
+        </div>
+
+<div class="main-content">
+    {% if data %}
+    <div class="dashboard-card mt-5">
+        {% if message %}
+        <div class="alert alert-danger" role="alert">
+            {{message}}
+        </div>
+        {% endif %}
+        <div style="margin: 0; padding-bottom: 5%; font-family: arial; text-align: center;">
+            <table id="dashboardtable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Checking</th>
+                        <th>Collage Name</th>
+                        <th>faculty Name</th>
+                        <th>No Of Faculty</th>
+                        <th>Contact No</th>
+                        <th>Collage Add</th>
+                        <th>No. Of Stud.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in data %}
+                    {%if i.status != 'Deleted'%}
+                    <tr>
+                        <td>{{i.date|date:"m/d/Y"}}</td>
+                        <td>{{i.checking}}</td>
+                        <td>{{i.collagename}}</td>
+                        <td>{{i.facultyname}}</td>
+                        <td>{{i.nooffaculty}}</td>
+                        <td>{{i.contactno}}</td>
+                        <td>{{i.collageadd}}</td>
+                        <td>{{i.numberofstud}}</td>
+                    </tr>
+                    {%endif%}
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    {% else %}
+    <center>
+        <h3>Empty Data</h3>
+    </center>
+    {% endif %}
+
+</div>
+</div>
+<script>
+    function searchTable() {
+        var inputDateStart, inputDateEnd, inputCollege, filterDateStart, filterDateEnd, filterCollege, table, tr, td, i, txtValueDate, txtValueCollege;
+
+        // Get input elements
+        inputDateStart = document.getElementById("startDate");
+        inputDateEnd = document.getElementById("endDate");
+        inputCollege = document.getElementById("searchInput");
+
+        // Get filter values
+        filterDateStart = inputDateStart.value.toUpperCase();
+        filterDateEnd = inputDateEnd.value.toUpperCase();
+        filterCollege = inputCollege.value.toUpperCase();
+
+        // Get the table and table rows
+        table = document.getElementById("dashboardtable");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows
+        for (i = 0; i < tr.length; i++) {
+            // Get date and college name cells
+            tdDate = tr[i].getElementsByTagName("td")[0]; // Assuming Date is the first column
+            tdCollege = tr[i].getElementsByTagName("td")[2]; // Assuming College Name is the third column
+
+            if (tdDate && tdCollege) {
+                // Get text values of cells
+                txtValueDate = tdDate.textContent || tdDate.innerText;
+                txtValueCollege = tdCollege.textContent || tdCollege.innerText;
+
+                // Check if date falls within the specified range and college name matches the filter
+                if ((filterDateStart === '' || txtValueDate >= filterDateStart) &&
+                    (filterDateEnd === '' || txtValueDate <= filterDateEnd) &&
+                    (filterCollege === '' || txtValueCollege.toUpperCase().includes(filterCollege))) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+
+
+            }
+        }
+    }
+</script>
+
+<!--                          ---PDF---                          -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+<script>
+    function generatePDF() {
+        var table = document.getElementById("dashboardtable");
+        var pdfHeader = document.getElementById("pdf-header");
+        var currentDate = new Date();
+
+        // Determine the date range to display in the PDF
+        var inputDateStart = document.getElementById("startDate").value;
+        var inputDateEnd = document.getElementById("endDate").value;
+        var dateRangeText;
+
+        if (inputDateStart && inputDateEnd) {
+            // User has specified a date range
+            dateRangeText = `Report from ${inputDateStart} to ${inputDateEnd}`;
+        } else {
+            // Determine the range from the table data (if needed)
+            var visibleDates = Array.from(table.querySelectorAll('tbody tr:not([style*="display: none"]) td:first-child'))
+                .map(td => td.textContent.trim());
+            if (visibleDates.length > 0) {
+                var sortedDates = visibleDates.sort((a, b) => new Date(a) - new Date(b));
+                dateRangeText = `Report from ${sortedDates[0]} to ${sortedDates[sortedDates.length - 1]}`;
+            } else {
+                dateRangeText = "Report for all available dates";
+            }
+        }
+
+        // Format the current date as you prefer
+        var dateString = currentDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        });
+
+        // Set the current date and the date range in the placeholder
+        document.getElementById("generation-date").innerHTML = `<b>Generated on: ${dateString}</b><br><b>${dateRangeText}</b>`;
+
+        // Show the PDF header for the PDF
+        pdfHeader.style.display = "block";
+
+        var element = document.createElement('div');
+        element.appendChild(pdfHeader.cloneNode(true)); // Clone and append
+        element.appendChild(table.cloneNode(true));
+
+        var opt = {
+            margin: [0.5, 0.5, 0.5, 0.5], // Margins
+            filename: 'report.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, logging: true, useCORS: true },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
+        };
+
+        // Generate PDF
+        html2pdf().set(opt).from(element).save().then(() => {
+            // Reset the PDF header visibility after saving
+            pdfHeader.style.display = "none";
+            // Optionally clear the date to prepare for the next generation
+            document.getElementById("generation-date").innerHTML = "";
+        });
+    }
+    
+
+</script>
+<script>
+    $(document).ready(function () {
+        $("#startDate").datepicker({
+            onSelect: function (dateText) {
+                searchTable();
+            }
+        });
+
+        $("#endDate").datepicker({
+            onSelect: function (dateText) {
+                searchTable();
+            }
+        });
+    });
+</script>
+<style>
+    /* CSS for page breaks */
+    .page-break {
+        page-break-after: always;
+    }
+    /* CSS for table borders */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+</style>
+
+{% endblock body %}

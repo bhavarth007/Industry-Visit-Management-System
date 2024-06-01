@@ -1,0 +1,173 @@
+<html>
+    <style>
+        body{
+            background: rgb(137,195,34);
+            background: linear-gradient(0deg, rgb(198, 250, 103) 0%, rgba(0, 102, 255, 0.849) 100%);
+        }
+        /* Basic styling for the form */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+label {
+    font-weight: bold;
+}
+
+/* Styling for the submit button */
+.btn-dark {
+    color: #fff;
+    background-color: #000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-dark:hover {
+    background-color: #333;
+}
+
+/* Styling for the modal title */
+.modal-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Styling for the list group */
+.list-group {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.list-group-item {
+    margin-top: 10px;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+    .form-control {
+        width: 100%;
+    }
+}
+
+/* Additional styling as needed */
+
+    </style>
+
+<body>
+    <form action="{% url 'reschedule_visit_user' %}" method="post" enctype="multipart/form-data">
+        <h5 class="modal-title" id="exampleModalLabel">Reschedule Visit</h5>
+        {% csrf_token %}
+
+        <input type="hidden" name="user" value="{{xyz}}">
+        {%if data%}
+        <input type="hidden" name="uid" value="{{data.id}}">
+        
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" class="form-control" id="date" value="{{data.date|date:'Y-m-d'}}" name="date"  required>
+            
+            <ul class="list-group">
+                <label for="radio">Select One Visit Time Schedule:</label>
+                {%if data.checking == '10:00 AM TO 1:00 PM' %}
+                <li class="list-group-item">
+                    <input class="form-check-input me-1" type="radio" id="checking" name="checking" value="10:00 AM TO 1:00 PM" checked required>
+                    10:00AM--TO--1:00PM
+                </li>
+                <li class="list-group-item">
+                    <input class="form-check-input me-1" type="radio" id="checking" name="checking" value="2:00 PM TO 5:00 PM" required>
+                    02:00PM--TO--5:00PM
+                </li>
+                {%else%}
+                <li class="list-group-item"> 
+                    <input class="form-check-input me-1" type="radio" id="checking" name="checking" value="10:00 AM TO 1:00 PM"  required>
+                    10:00AM--TO--1:00PM
+                </li>
+                <li class="list-group-item">
+                    <input class="form-check-input me-1" type="radio" id="checking" name="checking" value="2:00 PM TO 5:00 PM" checked required>
+                    02:00PM--TO--5:00PM
+                </li>
+                {%endif%}
+            </ul>
+        </div>
+        <div class="form-group">
+            <label for="collagename">Collage Name:</label>
+            <input type="text" class="form-control" id="collagename" value="{{data.collagename}}" name="collagename"  required>
+        </div>
+        <div class="form-group">
+            <label for="facultyname">Faculty Name:</label>
+            <input type="text" class="form-control" id="facultyname" value="{{data.facultyname}}" name="facultyname"  required>
+        </div>
+        <div class="form-group">
+            <label for="nooffaculty">Number of Faculty:</label>
+            <input type="number" class="form-control" placeholder="*Select Between 1 to 5"  id="nooffaculty"
+                value="{{data.nooffaculty}}" name="nooffaculty" min="1" max="5" required>
+        </div>
+
+        <div class="form-group">
+            <label for="contactno">Contact No:</label>
+            <input type="text" class="form-control" id="contactno" value="{{data.contactno}}" name="contactno"  required>
+        </div>
+
+        <div class="form-group">
+            <label for="collageadd">Collage Address:</label>
+            <input type="text" class="form-control" id="collageadd" value="{{data.collageadd}}" name="collageadd"  required>
+        </div>
+        <div class="form-group">
+            <label for="numberofstud">Number Of Student:</label>
+            <input type="number" class="form-control" placeholder="*Select Between 1 to 60" id="numberofstud"
+                value="{{data.numberofstud}}" name="numberofstud" min="1" max="60"  required>
+        </div>
+
+
+        <input type="hidden" class="text-primary" value="{{data.status}}" name="status" >
+        <div class="form-group">
+            <label for="letter"><b>Upload Request Letter(PDF Only):</b></label>
+            <input type="file" class="form-control" id="letter" name="letter" required>
+          </div>
+
+
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-dark"
+                style="background-image: linear-gradient(to right, #000000 0%, #565656  51%, #000000  100%)"><b>Reschedule</b></button>
+        </div>
+        
+    </form>
+    
+    </div>
+    </div>
+    </div>
+    
+    {%endif%}
+    <script>
+        // Get the current date
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var yyyy = today.getFullYear();
+    
+        today = yyyy + '-' + mm + '-' + dd;
+    
+        // Set the minimum date for the date input field to today
+        document.getElementById("date").min = today;
+    </script>
+</body>
+<script>
+    document.getElementById("rescheduleBtn").addEventListener("click", function() {
+        // Replace the URL with the URL of your visit booking page
+        var url = "/visit-booking"; // Example URL
+        url += "?date={{i.date}}&checking={{i.checking}}&collagename={{i.collagename}}&facultyname={{i.facultyname}}&nooffaculty={{i.nooffaculty}}&contactno={{i.contactno}}&collageadd={{i.collageadd}}&numberofstud={{i.numberofstud}}";
+        window.location.href = url;
+    });
+</script>
+
+</html>

@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | Manage visit{% endblock title %}
+
+{% block body %}
+{% load static %}
+
+
+<div id="xyz" style="padding-top: 2%;">
+    <br>
+    <br>
+    <div style="padding-left: 2%;">
+        <div class="main-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2><b>Search Filters</b></h2>
+                    <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search for any value..">
+                </div>
+            </div>
+        </div>
+        {% if data %}
+        &nbsp;
+        <div class="dashboard-card">
+            <h2><b>Faculty Records</b></h2>
+            <p class="card-content"></p>
+        </div>
+    </div>
+    <script>
+        function confirmDelete() {
+            return confirm("Are you sure you want to delete?");
+        }
+        function confirmApprove() {
+            return confirm("Are you sure you want to approve?");
+        }
+        function confirmDisapprove() {
+            return confirm("Are you sure you want to Disapprove?");
+        }
+        function confirmReschedule() {
+            return confirm("Are you sure you want to Reschedule?");
+        }
+    </script>
+    
+    <div style="padding-bottom: 1%; margin: 2%;">
+        <table id="dataTable" style="width: 100%; background-color: #8BC6EC; background-image: linear-gradient(135deg, #ffffff 0%, #b9bdff 100%); color: #000000; ">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Checking</th>
+                    <th>College Name</th>
+                    <th>Faculty Name</th>
+                    <th>No. Of Faculty</th>
+                    <th>Contact No</th>
+                    <th>College Address</th>
+                    <th>No. Of Students</th>
+                    <th>Letter</th>
+                    <th>Status</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in data %}
+                {% if i.status != 'Deleted' %}
+                
+                    <td>{{ i.date }}</td>
+                    <td>{{ i.checking }}</td>
+                    <td>{{ i.collagename }}</td>
+                    <td>{{ i.facultyname }}</td>
+                    <td>{{ i.nooffaculty }}</td>
+                    <td>{{ i.contactno }}</td>
+                    <td>{{ i.collageadd }}</td>
+                    <td>{{ i.numberofstud }}</td>
+                    <td><a href="{% url 'download_file' file_name=i.letter.name|cut:'letter/' %}">Download</a></td>
+                    <td><b>{{ i.status }}</b></td>
+                    <td>
+                        <div style="display: flex; gap: 2px;">
+                            {% if i.status == 'Disapproved' %}
+                            <a type="button" class="btn btn-success p-1" href="{% url 'approve_visit' i.id %}">Approved</a>
+                            {% elif i.status == 'Approved' %}
+                            <a type="button" class="btn btn-warning p-1" href="{% url 'disapprove_visit' i.id %}" onclick="return confirmDisapprove()">Disapproved</a>
+                            {% else %}
+                            <a type="button" class="btn btn-success p-1" href="{% url 'approve_visit' i.id %}" onclick="return confirmApprove()">Approved</a>
+                            <a type="button" class="btn btn-warning p-1" href="{% url 'disapprove_visit' i.id %}">Disapproved</a>
+                            {% endif %}
+                            <a type="button" class="btn btn-danger p-1" href="{% url 'delete_visit' i.id %}" onclick="return confirmDelete()">Delete</a>
+                            <a type="button" class="btn btn-danger p-1" href="{% url 'reschedule_visit' uid=i.id xyz='admin'%}" onclick="return confirmReschedule()">Reschedule</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    </div>
+    <div>
+        {% else %}
+        <center>
+            <h3>Empty Data</h3>
+        </center>
+        {% endif %}
+        <!-- Placeholder content for other dashboard sections -->
+    </div>
+
+    <script>
+        function searchTable() {
+            // Declare variables
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("dataTable");
+            tr = table.getElementsByTagName("tr");
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td");
+                for (var j = 0; j < td.length; j++) {
+                    cell = tr[i].getElementsByTagName("td")[j];
+                    if (cell) {
+                        txtValue = cell.textContent || cell.innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                            break;
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+
+</div>
+{% endblock body %}

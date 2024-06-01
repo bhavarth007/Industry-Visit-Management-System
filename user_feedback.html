@@ -1,0 +1,84 @@
+{% extends 'base.html'%}
+
+{% block title %}Dashboard | User Feedback{% endblock title %}
+
+{% block body %}
+<center>
+    <div class="main-content">
+        {% if data %}
+        <div class="dashboard-card mt-5">
+            {% if message %}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+            {% endif %}
+            
+
+
+
+            <div id="xyz" style="padding-top: 1%;">
+                <center>
+                    <h1><b>User Feedback Records</b></h1>
+                </center>
+                <table
+                    style="margin: 0 2%;  background-color: #8BC6EC;background-image: linear-gradient(135deg, #ffffff 0%, #b9bdff 100%); color: #000000;">
+                    <thead>
+                        <tr>
+                            <th>Uid</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Comment</th>
+                            <th>Image</th>
+                        </tr>
+                    </thead>
+                    {% for f in data %}
+                    <tbody>
+
+                        <tr>
+                            <td>{{ f.uid}}</td>
+                            <td>{{ f.name }}</td>
+                            <td>{{ f.email }}</td>
+                            <td>{{ f.comment }}</td>
+                            <td>
+                                <!-- Add a link to the image that triggers the JavaScript function -->
+                                <a href="" onclick="previewImage('{{ f.image }}')">
+                                    <img src="{{ media_url }}{{ f.image }}" height="50" width="50">
+                                </a>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        {% else %}
+        <center>
+            <h3>Empty Data</h3>
+        </center>
+        {% endif %}
+    </div>
+</center>
+
+<!-- JavaScript function to preview the image -->
+{% for f in data %}
+<script>
+    function previewImage(imageUrl) {
+        var imageWindow = window.open("", "_blank");
+        imageWindow.document.write(`<div style="height: 100vh; width: 100vw;">
+                <img src='{{ media_url }}${imageUrl}' style='height: 100vh; width: 100vw;'>
+                <a href="{% url 'user_feedback' %}" style='position: fixed; top: 10px; left: 10px; padding: 10px; background: rgb(2,0,36);
+                background: rgb(34,193,195);background: linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(255,231,0,0.9439425428374475) 100%);
+                text-decoration: none; border-radius: 10px; onclick='closePreview()'>Back</a></div>`
+        );
+    }
+
+    function closePreview() {
+        window.close();
+    }
+
+</script>
+{% endfor %}
+
+{% endblock body %}

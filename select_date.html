@@ -1,0 +1,172 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visit Management Admin Panel</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            
+        }
+
+        header {
+            background-color: #bced83;
+            color: #527fd4;
+            padding-top: 15px;
+            padding-bottom: 35px;
+
+        }
+
+        nav {
+            background-color: #53575c;
+            color: #fff;
+            padding: 20px;
+            width: 250px;
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #bced83;
+            display: block;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: #bced83;
+        }
+
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .dashboard-card {
+            background-color: #53575c;
+            border-radius: 8px;
+            box-shadow: 0 0 20px #5fd747;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>
+            <center><b>Admin Panel</b></center>
+            {{request.session.email}}
+            <a href="{% url 'dlogin' %}" type="button" class="btn btn-primary float-right"
+                style="color: rgb(0, 0, 0);" data-bs-toggle="modal" data-bs-target="#Login">Login</a>
+        </h1>
+    </header>
+    &nbsp;
+    <nav>
+        <a href="{% url 'dashboard' %}">Visit Booked</a>
+        <a href="{% url 'manage_visits' %}">Manage Visits</a>
+        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Reports</a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="{% url 'select_date' %}">Select Date</a>
+            <a class="dropdown-item" href="{% url 'select_collage' %}">Select Collage</a>
+            <a class="dropdown-item" href="{% url 'select_department' %}">Select Department</a>
+        </div>
+        <!-- Add more navigation links as needed -->
+    </nav>
+
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Filter Options</title>
+<style>
+    /* Basic styling for better appearance */
+    select, input {
+        margin: 5px;
+        padding: 5px;
+    }
+</style>
+</head>
+<body>
+
+<h2>Filter Options</h2>
+
+<!-- Date Selection -->
+<label for="date">Select Date:</label>
+<input type="date" id="date">
+
+<!-- College Selection -->
+<label for="college">Select College:</label>
+<select id="college">
+    <option value="">All Colleges</option>
+    <option value="college1">College 1</option>
+    <option value="college2">College 2</option>
+    <!-- Add more colleges as needed -->
+</select>
+
+<!-- Department Selection -->
+<label for="department">Select Department:</label>
+<select id="department">
+    <option value="">All Departments</option>
+    <option value="dept1">Department 1</option>
+    <option value="dept2">Department 2</option>
+    <!-- Add more departments as needed -->
+</select>
+
+<!-- JavaScript to handle filtering -->
+<script>
+    // Get references to filter elements
+    const dateInput = document.getElementById('date');
+    const collegeSelect = document.getElementById('college');
+    const departmentSelect = document.getElementById('department');
+
+    // Add event listeners to all filter elements
+    dateInput.addEventListener('change', filterResults);
+    collegeSelect.addEventListener('change', filterResults);
+    departmentSelect.addEventListener('change', filterResults);
+
+    function filterResults() {
+        // Get selected values
+        const selectedDate = dateInput.value;
+        const selectedCollege = collegeSelect.value;
+        const selectedDepartment = departmentSelect.value;
+
+        // Filter results based on selected values
+        // You can implement your filtering logic here
+        console.log('Selected Date:', selectedDate);
+        console.log('Selected College:', selectedCollege);
+        console.log('Selected Department:', selectedDepartment);
+        // You can perform further actions like AJAX requests to fetch filtered data and display it
+    }
+</script>
+
+</body>
+</html>
+
+    <!-- Bootstrap JS and Popper.js (for Bootstrap components that require it) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+
+</html>

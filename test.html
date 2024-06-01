@@ -1,0 +1,58 @@
+{% extends 'base.html'%}
+
+{%block title%}Dashboard{%endblock title%}
+
+{%block body%}
+<div class="main-content">
+    {% if data %}
+    <div class="dashboard-card mt-5">
+        {% if message %}
+        <div class="alert alert-danger" role="alert">
+            {{message}}
+        </div>
+        {% endif %}
+       
+<div><h2 class="card-title">&nbsp;&nbsp;All Visit Records</h2></div>
+</div>
+        <div style="margin: 0; padding: 0%; font-family: arial; text-align: center; overflow-x:auto; overflow-y:auto;">
+            <table id="dashboardtable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Checking</th>
+                        <th>Collage Name</th>
+                        <th>faculty Name</th>
+                        <th>No Of Faculty</th>
+                        <th>Contact No</th>
+                        <th>Collage Add</th>
+                        <th>No. Of Stud.</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in data %}
+                    <tr>
+                        <td>{{i.date}}</td>
+                        <td>{{i.checking}}</td>
+                        <td>{{i.collagename}}</td>
+                        <td>{{i.facultyname}}</td>
+                        <td>{{i.nooffaculty}}</td>
+                        <td>{{i.contactno}}</td>
+                        <td>{{i.collageadd}}</td>
+                        <td>{{i.numberofstud}}</td>
+                        <td><b>{{ i.status }}</b></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    {% else %}
+    <center>
+        <h3>Empty Data</h3>
+    </center>
+    {% endif %}
+
+</div>
+{%endblock body%}

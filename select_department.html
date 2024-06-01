@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visit Management Admin Panel</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            
+        }
+
+        header {
+            background-color: #bced83;
+            color: #527fd4;
+            padding-top: 15px;
+            padding-bottom: 35px;
+
+        }
+
+        nav {
+            background-color: #53575c;
+            color: #fff;
+            padding: 20px;
+            width: 250px;
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #bced83;
+            display: block;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: #bced83;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-color: #bced83;
+            border-width: 3px;
+            text-align: left;
+            color: #5fd747;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .dashboard-card {
+            background-color: #53575c;
+            border-radius: 8px;
+            box-shadow: 0 0 20px #5fd747;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>
+            <center><b>Admin Panel</b></center>
+            {{request.session.email}}
+            
+        </h1>
+        <a href="{% url 'dlogin' %}" type="button" class="btn btn-primary float-right"
+                style="color: rgb(0, 0, 0);" data-bs-toggle="modal" data-bs-target="#Login">Login</a>
+    </header>
+    &nbsp;
+    <nav>
+        <a href="{% url 'dashboard' %}">Visit Booked</a>
+        <a href="{% url 'manage_visits' %}">Manage Visits</a>
+        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Reports</a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="{% url 'select_date' %}">Select Date</a>
+            <a class="dropdown-item" href="{% url 'select_collage' %}">Select Collage</a>
+            <a class="dropdown-item" href="{% url 'select_department' %}">Select Department</a>
+        </div>
+        <!-- Add more navigation links as needed -->
+    </nav>
+
+   
+    <!-- Bootstrap JS and Popper.js (for Bootstrap components that require it) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+
+</html>
